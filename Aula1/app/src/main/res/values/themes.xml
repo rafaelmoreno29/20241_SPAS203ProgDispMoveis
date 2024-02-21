@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Aula1" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+         <item name="colorPrimary">#388E3C</item>
+        <item name="colorAccent">#9E9E9E</item>
+
+    </style>
+
+    <style name="Theme.Aula1" parent="Base.Theme.Aula1" />
+</resources>
