@@ -12,7 +12,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     Button buttonCompartilhar, buttonLigacao, buttonMapa,
-    buttonNavegacao, buttonSite;
+    buttonNavegacao, buttonSite, buttonTirarFoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +22,13 @@ public class MainActivity extends AppCompatActivity {
         buttonSite = (Button) findViewById(R.id.buttonSite);
         buttonCompartilhar = (Button) findViewById(R.id.buttonCompartilhar);
         buttonLigacao = (Button) findViewById(R.id.buttonLigacao);
+
+        buttonTirarFoto = (Button)findViewById(R.id.buttonTirarFoto);
+        buttonTirarFoto.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, FotoActivity.class);
+            startActivity(intent);
+        });
+
 
         buttonCompartilhar.setOnClickListener(v -> {
             Intent intent = new
