@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 
+import com.example.exemplofirebase2.models.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,78 +28,43 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton buttonAdd;
     FirebaseFirestore db;
+    EditText txtNome,txtSobrenome,txtAno,txtFoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         db = FirebaseFirestore.getInstance();
-        buscarUsuarios();
+        txtAno = (EditText)findViewById(R.id.editTextAno);
+        txtFoto = (EditText)findViewById(R.id.editTextFoto);
+        txtNome = (EditText)findViewById(R.id.editTextNome);
+        txtSobrenome =(EditText)findViewById(R.id.editTextSobrenome);
+
+        if(getIntent().getExtras() != null){
+            txtAno.setText(""+ getIntent().getIntExtra("anoNascimento",0));
+            txtNome.setText(getIntent().getStringExtra("nome"));
+            txtFoto.setText(getIntent().getStringExtra("foto"));
+            txtSobrenome.setText(getIntent().getStringExtra("sobrenome"));
+        }
+
         buttonAdd = (FloatingActionButton) findViewById(R.id.buttonAdd);
         buttonAdd.setOnClickListener(v -> {
-            adicionarUsuario();
-        });
+            Usuario usu = new Usuario();
+            usu.setFoto(txtFoto.getText().toString());
+            usu.setId(getIntent().getStringExtra("id"));
+            usu.setNome(txtNome.getText().toString());
+            usu.setSobrenome(txtSobrenome.getText().toString());
+            usu.setAnoNascimento(
+                    Integer.parseInt(txtAno.getText().toString()));
 
-
-        final DocumentReference docRef = db.collection("usuarios").document("123");
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w("xxx", "Listen failed.", e);
-                    return;
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("xxx", "Current data: " + snapshot.getData());
-                } else {
-                    Log.d("xxx", "Current data: null");
-                }
+            if(getIntent().getExtras()!= null){
+                //edição
+                db.collection("usuarios").document(usu.getId()).set(usu);
+            }else{
+                //inserção
+                db.collection("usuarios").add(usu);
             }
         });
-
     }
 
-    public void buscarUsuarios(){
-        db.collection("usuarios")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("Usuario", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("Usuario", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
 
-    public void adicionarUsuario(){
-        Map<String, Object> user = new HashMap<>();
-        user.put("nome", "Rafael");
-        user.put("sobrenome", "Moreno");
-        user.put("anoNascimento", 1985);
-
-        //exemplo setando o ID do documento
-        //db.collection("usuarios").document("123")
-                //.set(user);
-
-        db.collection("usuarios")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Usuario", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("Usuario", "Error adding document", e);
-                    }
-                });
-    }
 }

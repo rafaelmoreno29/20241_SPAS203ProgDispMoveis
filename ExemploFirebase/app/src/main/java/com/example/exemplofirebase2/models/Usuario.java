@@ -7,6 +7,15 @@ public class Usuario {
     private String nome;
     private String sobrenome;
     private int anoNascimento;
+    private String foto;
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 
     public String getSobrenome() {
         return sobrenome;
